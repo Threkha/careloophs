@@ -1,119 +1,67 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Careloop - Casual Healthcare Services</title>
+<title>Careloop Live Share</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <style>
-*{
-    font-family:"Times New Roman", Times, serif !important;
-    box-sizing:border-box;
-}
 body{
     margin:0;
-    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    min-height:100vh;
+    font-family:Arial;
+    background:#667eea;
 }
-header{
+.container{
     background:white;
-    padding:15px 40px;
-    position:sticky;
-    top:0;
-}
-nav{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-nav ul{
-    list-style:none;
-    display:flex;
-    gap:20px;
-}
-nav a{
-    text-decoration:none;
-    font-weight:bold;
-    color:#667eea;
-}
-section{
-    padding:60px 20px;
-    text-align:center;
-    color:white;
-}
-.share-section{
-    background:white;
-    padding:40px;
-    border-radius:20px;
+    width:90%;
     max-width:900px;
-    margin:40px auto;
-    color:black;
+    margin:50px auto;
+    padding:30px;
+    border-radius:15px;
 }
 #sharePrice{
-    font-size:28px;
+    font-size:26px;
     font-weight:bold;
     margin-bottom:20px;
 }
-footer{
-    background:black;
-    color:white;
-    text-align:center;
-    padding:20px;
-}
 canvas{
-    max-height:400px;
+    height:400px !important;
 }
 </style>
 </head>
 <body>
 
-<header>
-<nav>
-<div><b>Careloop</b></div>
-<ul>
-<li><a href="#home">ホーム</a></li>
-<li><a href="#services">サービス</a></li>
-<li><a href="#contact">お問い合わせ</a></li>
-</ul>
-</nav>
-</header>
-
-<section id="home">
-<h1>ケアループへようこそ</h1>
-</section>
-
-<section>
-<div class="share-section">
-<h2>📈 Careloop Share Value (Live Simulation)</h2>
+<div class="container">
+<h2>📈 Careloop Live Share Value</h2>
 <div id="sharePrice">₹ 350.00</div>
-<canvas id="shareChart"></canvas>
+<canvas id="chart"></canvas>
 </div>
-</section>
-
-<footer>
-<p>© 2026 ケアループ. 全著作権所有。</p>
-</footer>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+window.onload = function() {
 
-let labels = ["Start"];
-let sharePrice = 350;
-let dataPoints = [350];
+if (typeof Chart === "undefined") {
+    document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>Chart.js failed to load. Check internet connection.</h2>";
+    return;
+}
 
-const ctx = document.getElementById('shareChart').getContext('2d');
+let price = 350;
+let labels = [0];
+let values = [350];
+let step = 0;
 
-const shareChart = new Chart(ctx, {
-    type: 'line',
+const ctx = document.getElementById("chart");
+
+const chart = new Chart(ctx, {
+    type: "line",
     data: {
         labels: labels,
         datasets: [{
-            label: 'CARELOOP Share Price',
-            data: dataPoints,
-            borderColor: '#2e7d32',
-            backgroundColor: 'rgba(46,125,50,0.15)',
+            label: "CARELOOP Share Price",
+            data: values,
+            borderColor: "green",
+            backgroundColor: "rgba(0,128,0,0.2)",
             fill: true,
             tension: 0.4
         }]
@@ -122,50 +70,40 @@ const shareChart = new Chart(ctx, {
         responsive: true,
         animation: false,
         scales: {
-            y: {
-                beginAtZero: false
-            }
+            y: { beginAtZero: false }
         }
     }
 });
-
-let step = 0;
 
 setInterval(function(){
 
     step++;
 
-    // Gradual realistic movement
-    let fluctuation = (Math.random() - 0.5) * 5;
-    let trend = Math.sin(step / 10) * 2; // smooth wave motion
+    // smooth realistic wave movement
+    let wave = Math.sin(step / 8) * 3;
+    let random = (Math.random() - 0.5) * 4;
 
-    sharePrice += trend + fluctuation;
+    price += wave + random;
 
-    // Prevent sudden crash
-    if(sharePrice < 300){
-        sharePrice = 300;
-    }
+    if(price < 300) price = 300;
+    if(price > 850) price = 850;
 
-    if(sharePrice > 850){
-        sharePrice = 850;
-    }
+    document.getElementById("sharePrice").innerText =
+        "₹ " + price.toFixed(2);
 
-    document.getElementById("sharePrice").textContent =
-        "₹ " + sharePrice.toFixed(2);
-
-    labels.push(step.toString());
-    dataPoints.push(parseFloat(sharePrice.toFixed(2)));
+    labels.push(step);
+    values.push(price.toFixed(2));
 
     if(labels.length > 60){
         labels.shift();
-        dataPoints.shift();
+        values.shift();
     }
 
-    shareChart.update();
+    chart.update();
 
-},1000);
+}, 1000);
 
-});
+};
 </script>
 
 </body>
