@@ -1,80 +1,153 @@
-<script>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Careloop - Casual Healthcare Services</title>
 
-/* ===============================
-   START FROM ₹350 ONLY
-================================ */
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+    font-family:"Times New Roman", Times, serif !important;
+    box-sizing:border-box;
+}
+body{
+    margin:0;
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    min-height:100vh;
+}
+header{
+    background:white;
+    padding:15px 40px;
+    position:sticky;
+    top:0;
+}
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+nav ul{
+    list-style:none;
+    display:flex;
+    gap:20px;
+}
+nav a{
+    text-decoration:none;
+    font-weight:bold;
+    color:#667eea;
+}
+section{
+    padding:60px 20px;
+    text-align:center;
+    color:white;
+}
+.share-section{
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    max-width:900px;
+    margin:40px auto;
+    color:black;
+}
+#sharePrice{
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+footer{
+    background:black;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+canvas{
+    max-height:400px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<nav>
+<div><b>Careloop</b></div>
+<ul>
+<li><a href="#home">ホーム</a></li>
+<li><a href="#services">サービス</a></li>
+<li><a href="#contact">お問い合わせ</a></li>
+</ul>
+</nav>
+</header>
+
+<section id="home">
+<h1>ケアループへようこそ</h1>
+</section>
+
+<section>
+<div class="share-section">
+<h2>📈 Careloop Share Value (Live Simulation)</h2>
+<div id="sharePrice">₹ 350.00</div>
+<canvas id="shareChart"></canvas>
+</div>
+</section>
+
+<footer>
+<p>© 2026 ケアループ. 全著作権所有。</p>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
 let labels = ["Start"];
 let sharePrice = 350;
 let dataPoints = [350];
 
-/* ===============================
-   CREATE CHART
-================================ */
-
 const ctx = document.getElementById('shareChart').getContext('2d');
 
 const shareChart = new Chart(ctx, {
-type: 'line',
-data: {
-labels: labels,
-datasets: [{
-label: 'CARELOOP NSE Share Price',
-data: dataPoints,
-borderColor: '#2e7d32',
-backgroundColor: 'rgba(46,125,50,0.15)',
-fill: true,
-tension: 0.4
-}]
-},
-options: {
-responsive: true,
-animation: true,
-scales: {
-y: {
-beginAtZero: false
-}
-}
-}
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'CARELOOP Share Price',
+            data: dataPoints,
+            borderColor: '#2e7d32',
+            backgroundColor: 'rgba(46,125,50,0.15)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        animation: false,
+        scales: {
+            y: {
+                beginAtZero: false
+            }
+        }
+    }
 });
-
-/* ===============================
-   LIVE MOVEMENT
-================================ */
 
 let step = 0;
 
-setInterval(()=>{
+setInterval(function(){
 
     step++;
 
-    let trend = 2;
-
-    // Simulate 2025 rally
-    if(step > 20 && step < 35){
-        trend = 10;
-    }
-
-    // Simulate crash
-    if(step >=35 && step < 50){
-        trend = -12;
-    }
-
-    // Recovery
-    if(step >=50){
-        trend = 4;
-    }
-
-    let fluctuation = (Math.random() - 0.5) * 6;
+    // Gradual realistic movement
+    let fluctuation = (Math.random() - 0.5) * 5;
+    let trend = Math.sin(step / 10) * 2; // smooth wave motion
 
     sharePrice += trend + fluctuation;
 
+    // Prevent sudden crash
     if(sharePrice < 300){
         sharePrice = 300;
     }
 
-    if(sharePrice > 820){
-        sharePrice = 820;
+    if(sharePrice > 850){
+        sharePrice = 850;
     }
 
     document.getElementById("sharePrice").textContent =
@@ -92,4 +165,8 @@ setInterval(()=>{
 
 },1000);
 
+});
 </script>
+
+</body>
+</html>
